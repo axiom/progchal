@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+out=0
+
+for x in test/*.in
+do
+	if diff -q =(./100 < $x) ${x:r}.out 1>/dev/null
+	then
+		out=$out
+	else
+		echo "Failed on ${x:t:r}" >&2
+		out=`expr $out + 1`
+	fi
+done
+
+exit $out
