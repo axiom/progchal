@@ -1,30 +1,10 @@
 import Text.Printf
-import Data.Traversable
 
-data Tree a = Leaf a | Branch (Tree a) (Tree a)
+expected :: String -> Integer -> Double -> Double
+expected [] _ acc = acc
+expected (c:s) h acc = case c of
+	'(' -> expected s (h + 1) acc
+	')' -> expected s (h - 1) acc
+	_   -> let (v, r) = (head . reads) (c:s) in expected r h $ acc + v * 0.5^h
 
-showsTree :: (Show a) => Tree a -> ShowS
-showsTree (Leaf x) = shows x
-showsTree (Branch l r) = ('(':) . showsTree l . (' ':) . showsTree r . (')':)
-
-readsTree :: (Read a) => ReadS (Tree a)
-readsTree ('(':s) = [(Branch l r, u) | (l, ' ':t) <- readsTree s, (r, ')':u) <- readsTree t ]
-readsTree s = [(Leaf x, t) | (x, t) <- reads s ]
-
-instance Show a => Show (Tree a) where
-	showsPrec _ x = showsTree x
-
-instance Read a => Read (Tree a) where
-	readsPrec _ s = readsTree s
-
-evaluate :: Tree Double -> Double
-evaluate (Leaf x) = x
-evaluate (Branch l r) = lsum + rsum / 2.00
-	where
-		lsum = evaluate l
-		rsum = evaluate r
-
-main = do
-	tmp <- getLine
-	let tree = read tmp
-	putStrLn $ printf "%.2f" (evaluate tree)
+main = getLine >>= \l -> let v = expected l 0 0 in printf "%.2f\n" v
