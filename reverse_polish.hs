@@ -1,28 +1,31 @@
-data Expr
-	= Var Char
-	| Plus  Expr  Expr 
-	| Minus Expr  Expr 
-	| Mul   Expr  Expr 
-	| Div   Expr  Expr 
-	| Pow   Expr  Expr 
+import Text.Parsec
+import Text.Parsec.String
 
-instance Show Expr where
-	show = showExpr
+expr, subexpr, terminal :: Parser String
+expr = subexpr <|> terminal
 
+subexpr = do
+	open
+	left  <- expr
+	oper  <- operator
+	right <- expr
+	close
+	return $ left ++ right ++ [oper]
 
-showExpr :: Expr -> String
-showExpr (Var a) = [a]
-showExpr op = case op of
-	Plus   l r -> showExpr l ++ showExpr r ++ "+"
-	Minus  l r -> showExpr l ++ showExpr r ++ "-"
-	Mul    l r -> showExpr l ++ showExpr r ++ "*"
-	Div    l r -> showExpr l ++ showExpr r ++ "/"
-	Pow    l r -> showExpr l ++ showExpr r ++ "^"
+terminal = letter >>= return . (:[])
 
-
-readsExpr :: ReadS Expr
-readsExpr ('(':s) = [(Plus l r, u) | (l, '+' : t) <- readsExpr s , (r, ')' : u) <- readsExpr t ]
-readsExpr (c:xs) = [(Var c, xs)]
+operator, open, close :: Parser Char
+operator = oneOf "+-*/^"
+open     = char '('
+close    = char ')'
 
 
-main = return ()
+main :: IO ()
+main = turn . read =<< getLine
+	where
+		turn :: Int -> IO ()
+		turn 0 = return ()
+		turn i = do
+			e <- getLine
+			let Right s = parse expr "" e in putStrLn s
+			turn . pred $ i
