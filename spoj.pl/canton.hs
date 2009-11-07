@@ -1,21 +1,22 @@
-generate :: (Num n, Enum n) => [(n, n)]
-generate = concat [ zip (sublist s) (reverse (sublist s)) | s <- [1 ..] ]
+import Data.List (findIndex)
+import Control.Monad (replicateM_)
 
-sublist :: (Num n, Enum n) => Int -> [n]
-sublist size
-	| size `mod` 2 /= 0 = reverse $ take size [1 ..]
-	| otherwise = take size [1 ..]
+before n
+	| n < 2 = 0
+	| otherwise = flip div 2 $ (n - 1) * (n - 2)
 
-main :: IO ()
-main = do
-	cases <- getLine
-	go . read $ cases
+size n = let Just x = findIndex (n <) $ map whop [1 ..] in succ x
+
+whop n = flip div 2 (n * (n + 1)) + 1
+
+term n
+	| s `mod` 2 > 0 = (i, s - i)
+	| otherwise = (s - i, i)
 	where
-		go :: Int -> IO ()
-		go 0 = return ()
-		go i = do
-			n <- getLine
-			let ((p,q):_) = take 1 $ (drop . pred . read) n $ generate
-			putStr $ "TERM " ++ n ++ " IS "
-			putStrLn $ show p ++ "/" ++ show q
-			go . pred $ i
+		i = n - before s
+		s = succ . size $ n
+
+main = getLine >>= \i -> replicateM_ (read i) $ do
+	n <- getLine
+	let (p,q) = term . read $ n
+	putStrLn $ "TERM " ++ n ++ " IS "++show p ++ "/" ++ show q
