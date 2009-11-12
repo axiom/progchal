@@ -3,17 +3,19 @@ import Control.Applicative
 import System.Exit
 import qualified Data.Map as M
 import Data.List (sort)
+import Data.Array
 
 -- Data types {{{1
 
 type Mupp a = State M a
 
 type Party = (Int, Int)
+type Parties = Array Int Party
 
 type Table = M.Map (Int, Int) Int
 
 data M = M
-	{ parties :: [Party]
+	{ parties :: Parties
 	, table   :: Table
 	}
 	deriving (Show)
@@ -22,7 +24,7 @@ data M = M
 
 emptyM = M
 	{ table   = M.empty
-	, parties = []
+	, parties = undefined
 	}
 
 p1, p2 :: [Party]
@@ -60,7 +62,7 @@ wmax = 500
 -- Computations {{{1
 
 party :: Int -> Mupp Party
-party i = (!! i) <$> gets parties
+party i = (! i) <$> gets parties
 
 
 optimal :: Int -> Int -> Mupp Int
@@ -102,23 +104,27 @@ backtrack i v
 			else backtrack (i - 1) (v - co) >>= \c' -> return $ co + c'
 
 
-doit :: [Party] -> Int -> (Int, Int)
-doit p m = flip evalState emptyM { parties = sort p } $ do
+doit :: Parties -> Int -> (Int, Int)
+doit p m = flip evalState emptyM { parties = p } $ do
 	precalc pl m
 	f <- optimal pl m
 	c <- backtrack pl m
 	return (c, f)
-	where pl = pred $ length p
+	where pl = pred . snd $ bounds p
 
 
 main = do
 	(m:c:_) <- (map read) . words <$> getLine
-	when (m == 0 && c == 0) exitSuccess 
+	when (m == 0 && c == 0) exitSuccess
 
 	parties <- replicateM c $ do
 		(c:f:_) <- (map read) . words <$> getLine
 		return (c,f)
 
-	let (c, f) = doit parties m
+	let parties' = arrayIt parties
+
+	let (c, f) = doit parties' m
 	putStrLn $ show c ++ " " ++ show f
 	getLine >> main
+
+arrayIt p = listArray (0, length p) $ sort p
