@@ -1,5 +1,6 @@
 module Main where
 
+import Debug.Trace
 import System.IO
 import Control.Monad.State.Strict
 import Data.Maybe
@@ -43,9 +44,7 @@ pEdit = many1 $
 	choice [pNext, pPrev, pMove, pGet, pDelete, pInsert, pNothing]
 
 pNothing :: Parser Edit
-pNothing = do
-	number
-	return Nop
+pNothing = number >> return Nop
 
 pMove, pDelete, pNext, pPrev, pInsert, pGet :: Parser Edit
 pMove   = pNCon "Move" Move
@@ -60,12 +59,14 @@ pInsert = do
 	spaces
 	n <- number
 	spaces
-	s <- count n $ oneOf text
+	s <- slen n
+	spaces
 	return $ Insert n s
 
 pCon :: String -> Edit -> Parser Edit
 pCon s c = do
 	string s
+	spaces
 	return c
 
 pNCon :: String -> (Int -> Edit) -> Parser Edit
@@ -73,7 +74,19 @@ pNCon s c = do
 	string s
 	spaces
 	n <- number
+	spaces
 	return $ c n
+
+-- A string of length n, could have newline characters in between that should
+-- be ignored, i.e. not counted.
+slen :: Int -> Parser String
+slen n = slen' [] n
+	where
+		slen' s 0 = return $ reverse s
+		slen' s n = do
+			skipMany newline
+			c <- oneOf text
+			slen' (c:s) (n-1)
 
 number :: Parser Int
 number = do
@@ -107,7 +120,8 @@ eval (Delete k) = do
 
 eval (Get k) = do
 	a <- gets after
-	return $ Just $ take k a
+	let str = take k a
+	return $ Just $ str `seq` str
 
 eval Prev = do
 	es <- get
@@ -125,7 +139,9 @@ eval Next = do
 	put $ ES k' b a
 	return Nothing
 
-eval Nop = return Nothing
+eval Nop = do
+	put emptyES
+	return Nothing
 
 -- Utility {{{1
 
@@ -135,17 +151,18 @@ editShit as = do
 	l <- mapM eval as
 	return $ catMaybes l
 
+fromEdit :: [Edit] -> [String]
 fromEdit as = evalState (editShit as) emptyES
 
 -- Main {{{1
-main :: IO Int
 main = do
-	cases <- read `fmap` getLine
+	getLine
 	input <- getContents
 
-	replicateM_ cases $ do
-		let split = head . words $ input
-		let Right whops = parse pEdit "" $ filter (flip elem text) input
-		let w = fromEdit whops
-		mapM putStrLn w
-	return cases
+	let inp = filter (flip elem text) $ input
+	case parse pEdit "" inp of
+		Left whops -> trace ("ERR:" ++ show whops) $ return ()
+		Right eds -> do
+			print inp
+			print eds
+			sequence_ $ map putStrLn $ fromEdit eds
