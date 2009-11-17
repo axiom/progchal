@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
-static char text[2048000];
+#define MAX 2048000
 
 int main()
 {
-	int cases, ops, arg;
-	int cur, mc, i;
+	int cases, ops, arg, cur, mc, i, size;
+
+	size = 5000;
+	char *text = (char *) malloc(size);
 
 	scanf("%u", &cases);
 
@@ -45,6 +48,12 @@ int main()
 
 				case 'I':
 					scanf("nsert %u", &arg);
+
+					if (mc + arg >= size) {
+						size = (size + arg) * 2;
+						text = (char *) realloc(text, size);
+					}
+
 					memmove((text + cur + arg), (text + cur), (mc - cur));
 					getc(stdin);
 
@@ -63,5 +72,6 @@ int main()
 		}
 	}
 
+	free(text);
 	return 0;
 }
