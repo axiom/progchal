@@ -1,6 +1,5 @@
 module Main where
 
-import Debug.Trace
 import System.IO
 import Control.Monad.State.Strict
 import Data.Maybe
@@ -17,7 +16,7 @@ data Edit
 	| Prev
 	| Next
 	| Nop
-	deriving (Eq, Show, Read)
+	deriving Read
 
 -- Hello #World!
 -- |     |+----- after
@@ -28,7 +27,6 @@ data ES = ES
 	, before :: String
 	, after  :: String
 	}
-	deriving (Eq, Show)
 
 type Editor a = State ES a
 
@@ -82,11 +80,14 @@ pNCon s c = do
 slen :: Int -> Parser String
 slen n = slen' [] n
 	where
-		slen' s 0 = return $ reverse s
+		slen' s 0 = return []
 		slen' s n = do
 			skipMany newline
 			c <- oneOf text
-			slen' (c:s) (n-1)
+			r <- slen' s (n - 1)
+			return $ c : r
+			-- return $ oneOf text >>= \c -> slen' s (n - 1) >>= \r -> return $ c : r
+			-- slen' (c:s) (n-1)
 
 number :: Parser Int
 number = do
@@ -145,8 +146,7 @@ eval Nop = do
 
 -- Utility {{{1
 
--- editShit :: [Edit] -> Editor [String]
--- editShit [] = return []
+editShit :: [Edit] -> Editor [String]
 editShit as = do
 	l <- mapM eval as
 	return $ catMaybes l
@@ -158,11 +158,14 @@ fromEdit as = evalState (editShit as) emptyES
 main = do
 	getLine
 	input <- getContents
+	case parse pEdit "" (mupp input) of
+		Left whops -> putStrLn $ "ERR:" ++ show whops
+		Right eds  -> sequence_ $ map putStrLn $ fromEdit eds
 
-	let inp = filter (flip elem text) $ input
-	case parse pEdit "" inp of
-		Left whops -> trace ("ERR:" ++ show whops) $ return ()
-		Right eds -> do
-			print inp
-			print eds
-			sequence_ $ map putStrLn $ fromEdit eds
+
+mupp [] = []
+mupp ('\n':'\n':rest) = '\n' : mupp rest
+mupp ('\n':rest) = mupp rest
+mupp (c:rest)
+	| c `elem` text = c : mupp rest
+	| otherwise = mupp rest
