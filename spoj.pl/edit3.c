@@ -4,87 +4,68 @@
 
 #define MAX 2048000
 
-int number();
-
 static char text[MAX];
 
 int main()
 {
-	int cases, ops, arg, cur, mc, i;
+	int cases, ops, arg, cur, mc, i, size;
 
-	cases = number();
+	scanf("%u", &cases);
 
 	while (cases--) {
-		ops = number();
+		scanf("%u", &ops);
 		cur = 0;
 		mc  = 0;
 
 		while (ops--) {
 			switch (getchar()) {
+				case ' ':
+				case '\n':
+					ops++;
+					continue;
 
-				case 'I': /* Insert 3 abc */
-					fseek(stdin, 6, SEEK_CUR);
-					arg = number();
+				case 'I':
+					scanf("nsert %u", &arg);
 
 					memmove((text + cur + arg), (text + cur), (mc - cur));
+					getchar();
 
 					for (i = cur; i < cur + arg; i++) {
 						text[i] = getchar();
 						if (text[i] == '\n') i--;
 					}
 
-					getchar();
-
 					mc += arg;
 					continue;
 
-				case 'D': /* Delete 30 */
-					fseek(stdin, 6, SEEK_CUR);
-					arg = number();
+				case 'D':
+					scanf("elete %u", &arg);
 					mc -= arg;
 					memmove((text + cur), (text + cur + arg), (mc - cur));
 					continue;
 
-				case 'G': /* Get 10 */
+				case 'G':
+					scanf("et %u", &arg);
+					printf("%.*s\n", arg, (text + cur));
+					continue;
+
+				case 'M':
+					scanf("ove %u", &arg);
+					cur = arg;
+					continue;
+
+				case 'N':
 					fseek(stdin, 3, SEEK_CUR);
-					printf("%.*s\n", number(), (text + cur));
-					continue;
-
-				case 'M': /* Move 23 */
-					fseek(stdin, 4, SEEK_CUR);
-					cur = number();
-					continue;
-
-				case 'N': /* Next */
-					fseek(stdin, 4, SEEK_CUR);
 					cur++;
 					continue;
 
-				case 'P': /* Prev */
-					fseek(stdin, 4, SEEK_CUR);
+				case 'P':
+					fseek(stdin, 3, SEEK_CUR);
 					cur--;
 					continue;
-
 			}
 		}
-
-		getchar();
 	}
 
 	return 0;
-}
-
-int number()
-{
-	char c;
-	int n = 0;
-
-	while (1) {
-		c = getchar();
-		if (c >= 48 && c <= 57) {
-			n = 10 * n + c - 48;
-		} else {
-			return n;
-		}
-	}
 }
