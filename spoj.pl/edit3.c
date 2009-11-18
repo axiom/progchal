@@ -77,7 +77,7 @@ int main()
 
 		clear();
 
-		getchar(); // Munch up newline character.
+		if (cases) putc('\n', stdout);
 	}
 
 	return 0;
@@ -180,12 +180,12 @@ void insert(int n)
 
 void clear()
 {
-	item *temp = point;
+	item *temp = root;
 
-	while (point) {
-		temp = point;
-		point = point->next;
-		free(temp);
+	while (temp) {
+		point = temp;
+		temp = temp->next;
+		free(point);
 	}
 }
 
