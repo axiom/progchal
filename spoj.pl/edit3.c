@@ -4,25 +4,22 @@
 
 #define MAX 2048000
 
-static char text[MAX];
-
 int main()
 {
-	int cases, ops, arg, cur, mc, i, size;
+	unsigned int cases, ops, arg, cur, mc, i;
+	char text[MAX];
 
 	scanf("%u", &cases);
 
 	while (cases--) {
 		scanf("%u", &ops);
+		getchar(); // Munch up newline character.
+
 		cur = 0;
 		mc  = 0;
 
 		while (ops--) {
 			switch (getchar()) {
-				case ' ':
-				case '\n':
-					ops++;
-					continue;
 
 				case 'I':
 					scanf("nsert %u", &arg);
@@ -36,35 +33,41 @@ int main()
 					}
 
 					mc += arg;
+					getchar();
 					continue;
 
 				case 'D':
 					scanf("elete %u", &arg);
 					mc -= arg;
 					memmove((text + cur), (text + cur + arg), (mc - cur));
+					getchar();
 					continue;
 
 				case 'G':
 					scanf("et %u", &arg);
 					printf("%.*s\n", arg, (text + cur));
+					getchar();
 					continue;
 
 				case 'M':
 					scanf("ove %u", &arg);
 					cur = arg;
+					getchar();
 					continue;
 
 				case 'N':
-					fseek(stdin, 3, SEEK_CUR);
+					fseek(stdin, 4, SEEK_CUR);
 					cur++;
 					continue;
 
 				case 'P':
-					fseek(stdin, 3, SEEK_CUR);
+					fseek(stdin, 4, SEEK_CUR);
 					cur--;
 					continue;
 			}
 		}
+
+		getchar(); // Munch up newline character.
 	}
 
 	return 0;
