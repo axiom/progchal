@@ -10,10 +10,10 @@ struct c_element {
 
 typedef struct c_element item;
 
-void insert(int n);
-void delete(int n);
-void get(int n);
-void move(int n);
+void insert(unsigned long int n);
+void delete(unsigned long int n);
+void get(unsigned long int n);
+void move(unsigned long int n);
 void next();
 void prev();
 
@@ -25,7 +25,7 @@ static item *point;
 
 int main()
 {
-	unsigned int cases, ops, arg;
+	unsigned long int cases, ops, arg;
 
 	scanf("%u", &cases);
 
@@ -76,8 +76,6 @@ int main()
 		}
 
 		clear();
-
-		if (cases) putc('\n', stdout);
 	}
 
 	return 0;
@@ -95,13 +93,13 @@ void prev()
 		point = point->prev;
 }
 
-void move(int n)
+void move(unsigned long int n)
 {
 	point = root;
 	while (n--) next();
 }
 
-void get(int n)
+void get(unsigned long int n)
 {
 	item *prt = point;
 	item *old = point;
@@ -115,7 +113,7 @@ void get(int n)
 	point = old;
 }
 
-void delete(int n)
+void delete(unsigned long int n)
 {
 	item *del;
 
@@ -130,7 +128,7 @@ void delete(int n)
 	}
 }
 
-void insert(int n)
+void insert(unsigned long int n)
 {
 	char c;
 	item *cur, *old;
