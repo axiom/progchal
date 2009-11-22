@@ -2,3 +2,6 @@
 *.o
 *.prof
 a.out
+*.beam
+*.aux
+input*
