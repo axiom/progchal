@@ -9,13 +9,13 @@ primefactors x
 	| otherwise = b : primefactors (x `div` b)
 	where b = biggest x
 
-smallest x = case dropWhile (\p -> x `mod` p /= 0) primlist of
-	[] -> x
-	(s:_) -> s
-
 biggest x = if s == x
 	then x
 	else biggest $ x `div` s
 		where s = smallest x
+
+smallest x = case dropWhile (\p -> x `mod` p /= 0) primlist of
+	[] -> x
+	(s:_) -> s
 
 pf = primefactors
