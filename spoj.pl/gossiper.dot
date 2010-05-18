@@ -1,0 +1,10 @@
+graph GOSSIP {
+	Kirk  -- Lucy
+	Lucy  -- Mike
+	Mike  -- Nancy
+	Nancy -- Lucy
+
+	Alice -- Bob
+	Bob   -- Cindy
+	Cindy -- Alice
+}

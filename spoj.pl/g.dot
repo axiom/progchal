@@ -1,0 +1,18 @@
+graph GOSSIP {
+	node [label="\N"];
+	graph [bb="0,0,312,228"];
+	Kirk [pos="31,39", width="0.83", height="0.50"];
+	Lucy [pos="104,47", width="0.92", height="0.50"];
+	Mike [pos="171,19", width="0.92", height="0.50"];
+	Nancy [pos="162,91", width="1.14", height="0.50"];
+	Alice [pos="210,208", width="0.92", height="0.50"];
+	Bob [pos="282,209", width="0.81", height="0.50"];
+	Cindy [pos="246,147", width="1.06", height="0.50"];
+	Kirk -- Lucy [pos="61,42 64,42 68,43 71,43"];
+	Lucy -- Mike [pos="130,36 135,34 140,32 144,30"];
+	Mike -- Nancy [pos="169,37 167,48 166,62 164,73"];
+	Nancy -- Lucy [pos="141,75 135,71 129,66 123,62"];
+	Alice -- Bob [pos="243,208 246,208 250,208 253,208"];
+	Bob -- Cindy [pos="272,192 267,184 261,173 256,164"];
+	Cindy -- Alice [pos="236,165 231,173 225,183 220,191"];
+}
