@@ -1,2 +1,2 @@
 %: %.hs
-	ghc --make -main-is $@ $<
+	ghc -O3 --make -main-is $@ $<
