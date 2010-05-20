@@ -1,6 +1,7 @@
 module Problem12 where
 
 numbers = scanl1 (+) [1..]
+numbers' n = (n * (n + 1)) `div` 2
 sr = ceiling . sqrt . fromInteger
 
 divisors :: Integer -> Int
