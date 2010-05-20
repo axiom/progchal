@@ -1,3 +1,5 @@
+module Problem011 where
+
 data Direction = HO | VE | UD | DU
 
 numbers =

@@ -1,3 +1,7 @@
+module Problem013 where
+
+main = print ans
+
 ans :: Integer
 ans = read $ take 10 $ show $
 	37107287533902102798797998220837590246510135740250 +

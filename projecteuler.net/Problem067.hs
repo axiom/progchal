@@ -1,5 +1,5 @@
 -- Basically just a copy of problem 18
-module Problem67 where
+module Problem067 where
 
 import Support1867
 

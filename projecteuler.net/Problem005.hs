@@ -1,3 +1,5 @@
+module Problem005 where
+
 brute = head [ x | x <- [1.. product [1..20]], all (\z -> x `mod` z == 0) [1..20]]
 
 prims = sieve [2..]

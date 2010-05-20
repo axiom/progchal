@@ -1,4 +1,5 @@
-module Problem29 where
+module Problem029 where
+
 import Data.List
 import Data.Map (toList, fromList)
 

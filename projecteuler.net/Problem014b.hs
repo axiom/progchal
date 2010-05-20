@@ -1,3 +1,5 @@
+module Problem014b where
+
 import Data.Array
 import Data.List
 

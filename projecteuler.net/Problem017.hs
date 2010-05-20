@@ -1,3 +1,5 @@
+module Problem017 where
+
 -- inwords :: Integer -> String
 inwords n
 	| n < 10    = [units n]

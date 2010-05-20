@@ -1,3 +1,5 @@
+module Problem009 where
+
 ans = [ product [a,b,c]
 	| a <- [1..limit]
 	, b <- [a..limit]
@@ -6,3 +8,5 @@ ans = [ product [a,b,c]
 	, a + b + c == 1000
 	, a * a + b * b == c * c ]
 	where limit = 1000
+
+main = print ans

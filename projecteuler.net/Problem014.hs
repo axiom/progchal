@@ -1,3 +1,5 @@
+module Problem014 where
+
 import Data.List (foldl1')
 
 step :: Integer -> Integer

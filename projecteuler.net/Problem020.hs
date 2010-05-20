@@ -1,4 +1,4 @@
-module Problem20 where
+module Problem020 where
 
 import Data.Char
 

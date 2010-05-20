@@ -1,4 +1,4 @@
-module Problem18 where
+module Problem018 where
 
 import Support1867
 

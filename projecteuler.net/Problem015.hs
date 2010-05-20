@@ -1,4 +1,4 @@
-module Problem15 where
+module Problem015 where
 
 import Data.Array
 

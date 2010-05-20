@@ -1,3 +1,5 @@
+module Problem004 where
+
 -- Palindromes are divisable by 11
 answer = maximum [ x * y | x <- [110,121..999], y <- [100..999], show (x * y) == (reverse . show) (x * y)]
 

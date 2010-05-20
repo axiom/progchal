@@ -1,4 +1,4 @@
-module Problem24 ((#%)) where
+module Problem024 ((#%)) where
 
 import Data.List
 
