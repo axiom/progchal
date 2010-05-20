@@ -1,18 +1,10 @@
-numbers = 1 : zipWith (+) numbers [2..]
+module Problem12 where
 
-primes = 2 : 3 : sieve 0 (tail primes) 5
-sieve k (p:ps) x = [ n | n <- [x, x+2..p*p-2], all ((>0) . (x `rem`)) fs ]
-	++ sieve (k+1) ps (p*p+2)
-	where fs = take k (tail primes)
+numbers = scanl1 (+) [1..]
+sr = ceiling . sqrt . fromInteger
 
-faclength = length . factorise
+divisors :: Integer -> Int
+divisors n = sum [ 2 | c <- [1..sr n], n `mod` c == 0 ] - 1
 
-factorise x = factorise' x primelist
-	where
-		primelist = take 10000 primes
-		factorise' x [] = [x]
-		factorise' x (p:ps)
-			| p > x = [x]
-			| x == p = [p]
-			| x `mod` p == 0 = p : factorise' (x `div` p) ps
-			| otherwise = factorise' x ps
+answer = head $ filter ((>500) . divisors) numbers
+main = print answer
