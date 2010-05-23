@@ -1,11 +1,12 @@
 module Problem034 where
 
 import Data.Char
+import Utils
 
--- Quite arbitrary upper limit here, but it works.
-answer = sum [ n | n <- [3..fac 9]
-	, (==) n $ sum . map (fac . digitToInt) $ show n ]
+-- Upper limit set at 7*fac 9 because seven nines is more than seven times 9!
+answer = sum [ n | n <- [3..7*fac 9] , n == (fac . digitToInt) #+ show n ]
 
-fac n = product [1..n]
+-- factorials up to 9
+fac = (!!) [1,1,2,6,24,120,720,5040,40320,362880]
 
 main = print answer
