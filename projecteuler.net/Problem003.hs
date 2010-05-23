@@ -21,3 +21,4 @@ smallest x = case dropWhile (\p -> x `mod` p /= 0) primlist of
 	(s:_) -> s
 
 pf = primefactors
+main = print "Dunno?"

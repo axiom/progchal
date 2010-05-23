@@ -36,3 +36,5 @@ tens x
 
 units 0 = []
 units x = words "one two three four five six seven eight nine" !! (pred x)
+
+main = print "Dunno?"
