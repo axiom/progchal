@@ -1,40 +1,40 @@
 module Problem017 where
 
--- inwords :: Integer -> String
-inwords n
-	| n < 10    = [units n]
-	| n < 20    = [tens n, []]
-	| n < 100   = tens n      : (inwords $ n `mod` 10)
-	| n < 1000  = hundres n   : (inwords $ n `mod` 100)
-	| n < 10000 = thousands n : (inwords (n `mod` 1000))
+units, tens, hundreds, thousands, letters :: Int -> Int
 
-thousands 0 = []
-thousands x = units (x `div` 1000) ++ " thousand"
+units x = [0,3,3,5,4,4,3,5,5,4] !! x
 
-hundres 0 = []
-hundres x = units (x `div` 100) ++ " hundred"
+tens x = (map units [0..9] ++ [3,6,6,8,8,7,7,9,8,8] ++ regular) !! x
+	where regular = [ t + units u | t <- [6,6,5,5,5,7,6,6], u <- [0..9] ]
 
-tens 0 = []
-tens x
-	| x > 19 = case t of
-		2 -> "twenty"
-		3 -> "thirty"
-		4 -> "fourty"
-		5 -> "fivty"
-		6 -> "sixty"
-		7 -> "seventy"
-		8 -> "eighty"
-		9 -> "ninety"
-	| x < 20 = case u of
-		0 -> "ten"
-		1 -> "eleven"
-		2 -> "twelve"
-		n  -> units n ++ "teen"
+hundreds x = units h + tn + 7
 	where
-		u = x `mod` 10
-		t = x `div` 10
+		h = x `div` 100
+		t = x `mod` 100
+		tn = tens t
 
-units 0 = []
-units x = words "one two three four five six seven eight nine" !! (pred x)
+-- thousands x = units t + hundreds h + length "thousand"
+thousands x
+	-- -- Eleven hundred etc...
+	-- | x `mod` 100 == 0 && x `div` 100 < 20
+	-- = tens (x `div` 100) + 7
 
-main = print "Dunno?"
+	| otherwise = units (x `div` 1000) + 8 + letters (x `mod` 1000)
+
+letters x
+	| x < 10 = units x + connector x
+	| x < 100 = tens x + connector x
+	| x < 1000 = hundreds x + connector x
+	| x < 10000 = thousands x + connector x
+
+connector x
+	| x < 10 = 0
+	| x < 100 = 0
+	| x < 1000 && x `mod` 100 == 0 = 0 
+	| x < 10000 && x `mod` 1000 == 0 = 0
+	| x < 2000 && x `mod` 100 == 0 = 0
+	| otherwise = 3
+
+answer = sum $ map letters [1..1000]
+
+main = print answer
