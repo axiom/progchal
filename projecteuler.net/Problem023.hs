@@ -1,18 +1,17 @@
 module Problem023 where
 
+-- I did not manage to solve this one. Below is copy-paste. (And still not
+-- correct.) I get 4112737, but it should be 4179871.
+
+import Data.Array
 import Utils
 
-abundant = [ n | n <- [1..28123], (sum . divisors) n > n ]
-sumoftwo = [ a + b | a <- abundant, b <- abundant ]
-
--- answer = [ n | n <- [1..28123], False == elem n sumoftwo ]
--- answer = sum [ n | n <- [1..28123], False == canbe n ]
-answer = sum $ filter ((== False) . canbe) [1..28123]
-
-canbe n = 0 < length
-	[ () | y <- [0..n-1]
-	, y == (head . dropWhile (<y)) abundant
-	, (n - y) == (head . dropWhile (<(n - y))) abundant
-	]
-
-main = print answer
+n = 28124
+abundant n = (sum . divisors) n > n
+abunds_array = listArray (1,n) $ map abundant [1..n]
+abunds = filter (abunds_array !) [1..n]
+ 
+rests x = map (x-) $ takeWhile (<= x `div` 2) abunds
+isSum = any (abunds_array !) . rests
+ 
+main = print . sum . filter (not . isSum) $ [1..n]

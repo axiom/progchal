@@ -27,3 +27,12 @@ divisors n = (:) 1 $ inub $ ds ++ [ n `div` d | d <- ds]
 -- Get sorted list of unique numbers in list.
 inub :: Integral n => [n] -> [n]
 inub = map fst . toList . fromList . map (flip (,) 0)
+
+
+-- Arithmetic sum (?) sum [1..n]
+arisum n = n*(1 + n) `div` 2
+
+
+-- Replace list members.
+rep s r (a:as) = (if s == a then r else a) : rep s r as
+rep _ _ _ = []
