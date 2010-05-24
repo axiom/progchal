@@ -1,6 +1,7 @@
 module Utils where
 
 import Data.Map (toList, fromList)
+import Data.Char (digitToInt)
 
 -- Apply a function to something s.t. we generate numbers which we then sum.
 f #+ xs = sum $ map f xs
@@ -24,6 +25,19 @@ divisors n = (:) 1 $ inub $ ds ++ [ n `div` d | d <- ds]
 	where ds = [ d | d <- [2..(ceiling . sqrt . fromIntegral) n] , n `mod` d == 0 ]
 
 
+-- Convert a number into its digits.
+digits :: Integral n => n -> [n]
+-- digits = map (fromIntegral . digitToInt) . show
+-- digits n = [ n `div` 10^(i-1) `mod` 10^i | i <- [1..3] ]
+digits = fst . head . filter ((==) 0 . snd) . tail
+	. iterate (\(d, n) -> let (q, r) = n `divMod` 10 in (r:d, q)) . (,) [] . abs
+
+
+-- Convert list of digits to the number they represent in base ten.
+numberify :: Integral n => [n] -> n
+numberify = foldl1 ((+) . (*10))
+
+
 -- Get sorted list of unique numbers in list.
 inub :: Integral n => [n] -> [n]
 inub = map fst . toList . fromList . map (flip (,) 0)
@@ -36,3 +50,18 @@ arisum n = n*(1 + n) `div` 2
 -- Replace list members.
 rep s r (a:as) = (if s == a then r else a) : rep s r as
 rep _ _ _ = []
+
+
+-- Search in sorted list.
+insorted _ [] = False
+insorted z (x:xs)
+	| z == x = True
+	| z < x = False
+	| otherwise = insorted z xs
+
+
+-- Get all rotations of a list, e.g. [1,2,3] -> [[1,2,3],[2,3,1],[3,1,2]]
+rotations xs = rot xs []
+	where
+		rot [] _ = []
+		rot r@(x:xs) ys = (r ++ ys) : rot xs (ys ++ [x])
