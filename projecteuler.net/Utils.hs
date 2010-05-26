@@ -65,3 +65,16 @@ rotations xs = rot xs []
 	where
 		rot [] _ = []
 		rot r@(x:xs) ys = (r ++ ys) : rot xs (ys ++ [x])
+
+
+{-
+solen (x:xs) (y:ys)
+	| x > y = solen (x:xs) ys
+	| x < y = 0
+	| otherwise = 1 + solen xs ys
+solen _ _ = 0
+
+-- Gives the length of the common inits of two lists.
+initlen :: Eq a => [a] -> [a] -> Int
+initlen xs ys = length . takeWhile id $ zipWith (==) xs ys
+-}
